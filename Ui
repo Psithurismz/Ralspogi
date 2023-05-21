@@ -67,51 +67,52 @@ function Library.newUI()
     UI.ContentContainer.Position = UDim2.new(0, 0, 0, 60)
     UI.ContentContainer.Parent = UI.Frame
 
-    -- Function to add a new tab
-    function UI:AddTab(tabName)
-        local tabButton = Instance.new("TextButton")
-        tabButton.Name = tabName
-        tabButton.BackgroundColor3 = Color3.new(0, 0, 0)
-        tabButton.BackgroundTransparency = 0.8
-        tabButton.Size = UDim2.new(0, 80, 1, 0)
-        tabButton.Font = Enum.Font.SourceSansBold
-        tabButton.TextSize = 14
-        tabButton.TextColor3 = Color3.new(1, 1, 1) -- Change the text color to white
-        tabButton.Text = tabName
-        tabButton.Parent = UI.TabContainer
+-- Function to add a new tab
+function UI:AddTab(tabName)
+    local tabButton = Instance.new("TextButton")
+    tabButton.Name = tabName
+    tabButton.BackgroundColor3 = Color3.new(0, 0, 0)
+    tabButton.BackgroundTransparency = 0.8
+    tabButton.Size = UDim2.new(0, 80, 1, 0)
+    tabButton.Font = Enum.Font.SourceSansBold
+    tabButton.TextSize = 14
+    tabButton.TextColor3 = Color3.new(1, 1, 1) -- Change the text color to white
+    tabButton.Text = tabName
+    tabButton.Parent = UI.TabContainer
 
-        -- Create the tab content frame
-        local tabContent = Instance.new("Frame")
-        tabContent.Name = "Content"
-        tabContent.BackgroundColor3 = Color3.new(0, 0, 0)
-        tabContent.BackgroundTransparency = 0.8
-        tabContent.Size = UDim2.new(1, 0, 1, 0)
-        tabContent.Position = UDim2.new(0, 0, 0, 0)
-        tabContent.Parent = UI.ContentContainer
+    -- Create the tab content frame
+    local tabContent = Instance.new("Frame")
+    tabContent.Name = "Content"
+    tabContent.BackgroundColor3 = Color3.new(0, 0, 0)
+    tabContent.BackgroundTransparency = 0.8
+    tabContent.Size = UDim2.new(1, 0, 1, 0)
+    tabContent.Position = UDim2.new(0, 0, 0, 0)
+    tabContent.Parent = UI.ContentContainer
 
-        -- Set the tab's layout order based on the number of existing tabs
-        tabButton.LayoutOrder = #UI.TabContainer:GetChildren()
+    -- Set the tab's layout order based on the number of existing tabs
+    tabButton.LayoutOrder = #UI.TabContainer:GetChildren()
 
-        -- Connect the tab button's MouseButton1Click event to switch to the tab
-        tabButton.MouseButton1Click:Connect(function()
-            -- Hide all tab contents
-            for _, child in ipairs(UI.ContentContainer:GetChildren()) do
-                child.Visible = false
-            end
-
-            -- Show the selected tab content
-            tabContent.Visible = true
-        end)
-
-        -- Show the first tab by default
-        if #UI.ContentContainer:GetChildren() == 1 then
-            tabContent.Visible = true
-        else
-            tabContent.Visible = false
+    -- Connect the tab button's MouseButton1Click event to switch to the tab
+    tabButton.MouseButton1Click:Connect(function()
+        -- Hide all tab contents
+        for _, child in ipairs(UI.ContentContainer:GetChildren()) do
+            child.Visible = false
         end
 
-        return tabContent
+        -- Show the selected tab content
+        tabContent.Visible = true
+    end)
+
+    -- Show the first tab by default
+    if #UI.ContentContainer:GetChildren() == 1 then
+        tabContent.Visible = true
+    else
+        tabContent.Visible = false
     end
+
+    return tabContent
+end
+
 
     -- Function to add a button to a tab
     function UI:AddButton(tab, buttonName, callback)
