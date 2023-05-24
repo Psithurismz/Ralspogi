@@ -1,0 +1,533 @@
+_G.aut = true
+
+function totarget(CFgo)
+
+    local tween_s = game:service"TweenService"
+
+    local info = TweenInfo.new((game:GetService("Players")["LocalPlayer"].Character.HumanoidRootPart.Position - CFgo.Position).Magnitude/300, Enum.EasingStyle.Linear)
+
+    local tween, err = pcall(function()
+
+        tween = tween_s:Create(game.Players.LocalPlayer.Character["HumanoidRootPart"], info, {CFrame = CFgo})
+
+        tween:Play()
+
+    end)
+
+    if not tween then return err end
+
+end
+
+task.spawn(function()
+
+_G.FramBoss = true
+
+task.spawn(function()
+
+if _G.FramBoss == true then
+
+ _G.AutoFarm = true
+
+if game:GetService("Workspace").Enemies:FindFirstChild("Darkbeard [Lv. 1000] [Raid Boss]") then
+
+    for i, v in pairs(game.Workspace.Enemies:GetChildren()) do
+
+        if
+
+            _G.FramBoss and v:IsA("Model") and v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") and
+
+                v.Humanoid.Health > 0 and
+
+                v.Name == "Darkbeard [Lv. 1000] [Raid Boss]"
+
+         then
+
+            repeat
+
+                pcall(
+
+                    function()
+
+                        wait()
+
+                        v.HumanoidRootPart.Transparency = 1
+
+                        v.HumanoidRootPart.CanCollide = false
+
+                        totarget(v.HumanoidRootPart.CFrame * CFrame.new(0, 25, 0))
+
+                        game:GetService("Players").LocalPlayer.Character.Humanoid:ChangeState(11)
+
+                        VirtualUser:CaptureController()
+
+                        VirtualUser:ClickButton1(Vector2.new(851, 158), game:GetService("Workspace").Camera.CFrame)
+
+                    end
+
+                )
+
+            until not _G.FramBoss or not v.Parent or v.Humanoid.Health <= 0
+
+        end
+
+    end
+
+end
+
+end
+
+end)
+
+task.spawn(function()
+
+if _G.FramBoss == true then
+
+local CombatFramework = require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework)
+
+local Camera = require(game.ReplicatedStorage.Util.CameraShaker)
+
+Camera:Stop()
+
+coroutine.wrap(function()
+
+    game:GetService("RunService").Stepped:Connect(function()
+
+        if getupvalues(CombatFramework)[2]['activeController'].timeToNextAttack then
+
+            getupvalues(CombatFramework)[2]['activeController'].timeToNextAttack = 99999999
+
+            getupvalues(CombatFramework)[2]['activeController'].hitboxMagnitude = 25
+
+            getupvalues(CombatFramework)[2]['activeController']:attack()
+
+        end
+
+    end)
+
+end)()
+
+end
+
+end)
+
+end)
+
+if aut == false then
+
+spawn(function()
+
+    game:GetService("RunService").Heartbeat:Connect(function()
+
+        if _G.AutoFarm then
+
+        if game:GetService("Players").LocalPlayer.Character:FindFirstChild("Humanoid") then
+
+            setfflag("HumanoidParallelRemoveNoPhysics", "False")
+
+            setfflag("HumanoidParallelRemoveNoPhysicsNoSimulate2", "False")
+
+            game:GetService("Players").LocalPlayer.Character.Humanoid:ChangeState(11)
+
+            end
+
+        end
+
+    end)
+
+end)
+
+end
+
+    function EquipWeapon(ToolSe)
+
+        if not _G.NotAutoEquip then
+
+            if game.Players.LocalPlayer.Backpack:FindFirstChild(ToolSe) then
+
+                Tool = game.Players.LocalPlayer.Backpack:FindFirstChild(ToolSe)
+
+                wait(.1)
+
+                game.Players.LocalPlayer.Character.Humanoid:EquipTool(Tool)
+
+            end
+
+        end
+
+    end
+
+function thisCode()
+
+    repeat task.wait() until game:IsLoaded()
+
+    local PlaceID = game.PlaceId
+
+    local AllIDs = {}
+
+    local foundAnything = ""
+
+    local actualHour = os.date("!*t").hour
+
+    local Deleted = false
+
+    local File = pcall(function()
+
+        AllIDs = game:GetService('HttpService'):JSONDecode(readfile("NotSameServers.json"))
+
+    end)
+
+    if not File then
+
+        table.insert(AllIDs, actualHour)
+
+        writefile("NotSameServers.json", game:GetService('HttpService'):JSONEncode(AllIDs))
+
+    end
+
+    function TPReturner()
+
+        local Site;
+
+        if foundAnything == "" then
+
+            Site = game.HttpService:JSONDecode(game:HttpGet('https://games.roblox.com/v1/games/' .. PlaceID .. '/servers/Public?sortOrder=Asc&limit=100'))
+
+        else
+
+            Site = game.HttpService:JSONDecode(game:HttpGet('https://games.roblox.com/v1/games/' .. PlaceID .. '/servers/Public?sortOrder=Asc&limit=100&cursor=' .. foundAnything))
+
+        end
+
+        local ID = ""
+
+        if Site.nextPageCursor and Site.nextPageCursor ~= "null" and Site.nextPageCursor ~= nil then
+
+            foundAnything = Site.nextPageCursor
+
+        end
+
+        local num = 0;
+
+        for i,v in pairs(Site.data) do
+
+            local Possible = true
+
+            ID = tostring(v.id)
+
+            if tonumber(v.maxPlayers) > tonumber(v.playing) then
+
+                for _,Existing in pairs(AllIDs) do
+
+                    if num ~= 0 then
+
+                        if ID == tostring(Existing) then
+
+                            Possible = false
+
+                        end
+
+                    else
+
+                        if tonumber(actualHour) ~= tonumber(Existing) then
+
+                            local delFile = pcall(function()
+
+                                delfile("NotSameServers.json")
+
+                                AllIDs = {}
+
+                                table.insert(AllIDs, actualHour)
+
+                            end)
+
+                        end
+
+                    end
+
+                    num = num + 1
+
+                end
+
+                if Possible == true then
+
+                    table.insert(AllIDs, ID)
+
+                    wait()
+
+                    pcall(function()
+
+                        writefile("NotSameServers.json", game:GetService('HttpService'):JSONEncode(AllIDs))
+
+                        wait()
+
+                        game:GetService("TeleportService"):TeleportToPlaceInstance(PlaceID, ID, game.Players.LocalPlayer)
+
+                    end)
+
+                    wait(4)
+
+                end
+
+            end
+
+        end
+
+    end
+
+    
+
+    function Teleport()
+
+        while wait() do
+
+            pcall(function()
+
+                TPReturner()
+
+                if foundAnything ~= "" then
+
+                    TPReturner()
+
+                end
+
+            end)
+
+        end
+
+    end
+
+    local veryImportantWaitTime = 0.5
+
+    task.spawn(function()
+
+        while task.wait(veryImportantWaitTime) do
+
+            pcall(function()
+
+                for i,v in pairs(game.CoreGui:GetDescendants()) do
+
+                    pcall(function()
+
+                        if string.find(v.Name,"ErrorMessage") then
+
+                            if string.find(v.Text,"Security kick") then
+
+                                veryImportantWaitTime = 1e9
+
+                                Teleport()
+
+                            end
+
+                        end
+
+                    end)
+
+                end
+
+            end)
+
+        end
+
+    end)
+
+local StarterGui = game:GetService("StarterGui") -- not sure why you used CoreGui
+
+local bindable = Instance.new("BindableFunction")
+
+    
+
+function gui()
+
+    StarterGui:SetCore("SendNotification", {
+
+	Title = "Psithurism Auto Chest";	Text = "Find Chest?";
+
+	Icon = "https://www.roblox.com/assetId/177737131";
+
+	Duration = math.huge;
+
+	Callback = bindable;
+
+	Button1 = "Yes";
+
+	Button2 = "No";
+
+})
+
+end
+
+gui()
+
+    function bindable.OnInvoke(text)
+
+    if text == "No" then
+
+    _G.aut = false
+
+    gui()
+
+    elseif text == "Yes" then
+
+    _G.aut = true
+
+    gui()
+
+    auto()
+
+    end
+
+    end
+
+    
+
+function auto()
+
+    if _G.aut == true then
+
+    task.spawn(function()
+
+        while _G.aut == true do
+
+            if _G.aut == true then
+
+                local hasChar = game.Players.LocalPlayer:FindFirstChild("Character")
+
+                if not game.Players.LocalPlayer.Character then
+
+        
+
+                else
+
+                    local hasCrewTag = game.Players.LocalPlayer.Character:FindFirstChild("CrewBBG",true)
+
+                    if hasCrewTag then hasCrewTag:Destroy() end
+
+                    local hasHumanoid = game.Players.LocalPlayer.Character:FindFirstChild("Humanoid")
+
+                    if hasHumanoid then
+
+                        local Chest = game.Workspace:FindFirstChild("Chest4") or game.Workspace:FindFirstChild("Chest3") or game.Workspace:FindFirstChild("Chest2")
+
+                        
+
+                        if Chest then
+
+                            game.Players.LocalPlayer.Character:PivotTo(Chest:GetPivot())
+
+                            firesignal(Chest.Touched,game.Players.LocalPlayer.Character.HumanoidRootPart)
+
+                        else
+
+                            Teleport()
+
+                            break
+
+                        end
+
+                    end 
+
+                end
+
+            end
+
+            task.wait()
+
+        end
+
+    end)
+
+end
+
+end
+
+end
+
+thisCode()
+
+auto()
+
+join = game.Players.localPlayer.Neutral == false
+
+if _G.Team == nil then
+
+    _G.Team = "Pirates"
+
+end
+
+_G.Team = "Marines"
+
+if (_G.Team == "Pirates" or _G.Team == "Marines") and not join then
+
+    repeat wait()
+
+        pcall(function()
+
+            join = game.Players.localPlayer.Neutral == false
+
+            if _G.Team == "Pirates" then
+
+                for i,v in pairs({"MouseButton1Click", "MouseButton1Down", "Activated"}) do
+
+                    for i,v in pairs(getconnections(game:GetService("Players").LocalPlayer.PlayerGui.Main.ChooseTeam.Container.Pirates.Frame.ViewportFrame.TextButton[v])) do
+
+                        v.Function()
+
+                    end
+
+                end
+
+            elseif _G.Team == "Marines" then
+
+                for i,v in pairs({"MouseButton1Click", "MouseButton1Down", "Activated"}) do
+
+                    for i,v in pairs(getconnections(game:GetService("Players").LocalPlayer.PlayerGui.Main.ChooseTeam.Container.Marines.Frame.ViewportFrame.TextButton[v])) do
+
+                        v.Function()
+
+                    end
+
+                end
+
+            else
+
+                for i,v in pairs({"MouseButton1Click", "MouseButton1Down", "Activated"}) do
+
+                    for i,v in pairs(getconnections(game:GetService("Players").LocalPlayer.PlayerGui.Main.ChooseTeam.Container.Marines.Frame.ViewportFrame.TextButton[v])) do
+
+                        v.Function()
+
+                    end
+
+                end
+
+            end
+
+        end)
+
+    until join == true
+
+    game:GetService("Players").LocalPlayer.PlayerGui.Main.ChooseTeam.Visible = false
+
+end
+
+task.spawn(function()
+
+while _G.Aut == true do
+
+if game.Players.LocalPlayer.Backpack:FindFirstChild("Fist of Darkness") or game.Players.LocalPlayer.Character:FindFirstChild("Fist of Darkness") then
+
+         _G.aut = false
+
+         wait()
+
+         totarget(CFrame.new(3780.00439, 15.000288, -3499.56714, 0.994518042, 0, 0.104565002, 0, 1, 0, -0.104565002, 0, 0.994518042))
+
+         wait(10)
+
+         EquipWeapon("Godhuman")
+
+end
+
+end
+
+end)
